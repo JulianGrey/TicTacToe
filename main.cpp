@@ -8,6 +8,8 @@ void placeMarker(std::string &cell, bool playerOne, bool &movePending);
 
 void displayBoard(std::string boardArray[3][3]);
 
+void displayAvailablePositions(std::string boardArray[3][3]);
+
 int main() {
     const int dimension = 3;
     std::string input;
@@ -40,7 +42,9 @@ int main() {
 
             movePending = true;
             while(movePending) {
-                std::cout << "Choose where to put your marker: ";
+                std::cout << "Choose where to put your marker\n";
+                displayAvailablePositions(boardArray);
+                std::cout << "Selection: ";
                 getline(std::cin, input);
                 if(input == "TL") {
                     placeMarker(boardArray[0][0], playerOneTurn, movePending);
@@ -54,7 +58,7 @@ int main() {
                 else if(input == "CL") {
                     placeMarker(boardArray[1][0], playerOneTurn, movePending);
                 }
-                else if(input == "CC") {
+                else if(input == "C") {
                     placeMarker(boardArray[1][1], playerOneTurn, movePending);
                 }
                 else if(input == "CR") {
@@ -99,6 +103,36 @@ void placeMarker(std::string &cell, bool playerOne, bool &movePending) {
     }
     else {
         std::cout << "Position already filled, choose another position\n";
+    }
+}
+
+void displayAvailablePositions(std::string boardArray[3][3]) {
+    if(boardArray[0][0] == " ") {
+        std::cout << "Top Left (TL)\n";
+    }
+    if(boardArray[0][1] == " ") {
+        std::cout << "Top Centre (TC)\n";
+    }
+    if(boardArray[0][2] == " ") {
+        std::cout << "Top Right (TR)\n";
+    }
+    if(boardArray[1][0] == " ") {
+        std::cout << "Centre Left (CL)\n";
+    }
+    if(boardArray[1][1] == " ") {
+        std::cout << "Centre (C)\n";
+    }
+    if(boardArray[1][2] == " ") {
+        std::cout << "Centre Right (CR)\n";
+    }
+    if(boardArray[2][0] == " ") {
+        std::cout << "Bottom Left (BL)\n";
+    }
+    if(boardArray[2][1] == " ") {
+        std::cout << "Bottom Centre (BC)\n";
+    }
+    if(boardArray[2][2] == " ") {
+        std::cout << "Bottom Right (BR)\n";
     }
 }
 
