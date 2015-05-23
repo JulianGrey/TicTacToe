@@ -4,7 +4,7 @@
 #include <typeinfo>
 
 
-std::string placeMarker(bool playerOne, bool &movePending);
+void placeMarker(std::string &cell, bool playerOne, bool &movePending);
 
 void displayBoard(std::string boardArray[3][3]);
 
@@ -43,31 +43,31 @@ int main() {
                 std::cout << "Choose where to put your marker: ";
                 getline(std::cin, input);
                 if(input == "TL") {
-                    boardArray[0][0] = placeMarker(playerOneTurn, movePending);
+                    placeMarker(boardArray[0][0], playerOneTurn, movePending);
                 }
                 else if(input == "TC") {
-                    boardArray[0][1] = placeMarker(playerOneTurn, movePending);
+                    placeMarker(boardArray[0][1], playerOneTurn, movePending);
                 }
                 else if(input == "TR") {
-                    boardArray[0][2] = placeMarker(playerOneTurn, movePending);
+                    placeMarker(boardArray[0][2], playerOneTurn, movePending);
                 }
                 else if(input == "CL") {
-                    boardArray[1][0] = placeMarker(playerOneTurn, movePending);
+                    placeMarker(boardArray[1][0], playerOneTurn, movePending);
                 }
                 else if(input == "CC") {
-                    boardArray[1][1] = placeMarker(playerOneTurn, movePending);
+                    placeMarker(boardArray[1][1], playerOneTurn, movePending);
                 }
                 else if(input == "CR") {
-                    boardArray[1][2] = placeMarker(playerOneTurn, movePending);
+                    placeMarker(boardArray[1][2], playerOneTurn, movePending);
                 }
                 else if(input == "BL") {
-                    boardArray[2][0] = placeMarker(playerOneTurn, movePending);
+                    placeMarker(boardArray[2][0], playerOneTurn, movePending);
                 }
                 else if(input == "BC") {
-                    boardArray[2][1] = placeMarker(playerOneTurn, movePending);
+                    placeMarker(boardArray[2][1], playerOneTurn, movePending);
                 }
                 else if(input == "BR") {
-                    boardArray[2][2] = placeMarker(playerOneTurn, movePending);
+                    placeMarker(boardArray[2][2], playerOneTurn, movePending);
                 }
                 else {
                     std::cout << "Invalid option\n";
@@ -87,13 +87,18 @@ int main() {
     return 0;
 }
 
-std::string placeMarker(bool playerOne, bool &movePending) {
-    movePending = false;
-    if(playerOne) {
-        return "x";
+void placeMarker(std::string &cell, bool playerOne, bool &movePending) {
+    if(cell == " ") {
+        movePending = false;
+        if(playerOne) {
+            cell = "x";
+        }
+        else {
+            cell = "o";
+        }
     }
     else {
-        return "o";
+        std::cout << "Position already filled, choose another position\n";
     }
 }
 
