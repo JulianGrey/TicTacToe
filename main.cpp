@@ -4,7 +4,7 @@
 #include <typeinfo>
 
 
-void placeMarker(std::string &cell, bool playerOne, bool &movePending);
+void placeMarker(std::string &cell, int &positionsLeft, bool playerOne, bool &movePending);
 
 void displayBoard(std::string boardArray[3][3]);
 
@@ -12,24 +12,21 @@ void displayAvailablePositions(std::string boardArray[3][3]);
 
 int main() {
     const int dimension = 3;
+    int positionsLeft = 9;
     std::string input;
     bool quit = false;
-    bool playing = false;
+    bool playing = true;
     bool movePending = false;
     bool playerOneTurn = true;
 
     while(!quit) {
-        playing = true;
         std::string boardArray[dimension][dimension] = {
             {" ", " ", " "},
             {" ", " ", " "},
             {" ", " ", " "}
         };
 
-        std::cout << typeid(input).name() << '\n';
-        std::cout << typeid(boardArray).name() << '\n';
-        std::cout << typeid(boardArray[0][0]).name() << '\n';
-
+        positionsLeft = 9;
         displayBoard(boardArray);
 
         while(playing) {
@@ -47,34 +44,34 @@ int main() {
                 std::cout << "Selection: ";
                 getline(std::cin, input);
                 if(input == "TL") {
-                    placeMarker(boardArray[0][0], playerOneTurn, movePending);
+                    placeMarker(boardArray[0][0], positionsLeft, playerOneTurn, movePending);
                 }
                 else if(input == "TC") {
-                    placeMarker(boardArray[0][1], playerOneTurn, movePending);
+                    placeMarker(boardArray[0][1], positionsLeft, playerOneTurn, movePending);
                 }
                 else if(input == "TR") {
-                    placeMarker(boardArray[0][2], playerOneTurn, movePending);
+                    placeMarker(boardArray[0][2], positionsLeft, playerOneTurn, movePending);
                 }
                 else if(input == "CL") {
-                    placeMarker(boardArray[1][0], playerOneTurn, movePending);
+                    placeMarker(boardArray[1][0], positionsLeft, playerOneTurn, movePending);
                 }
                 else if(input == "C") {
-                    placeMarker(boardArray[1][1], playerOneTurn, movePending);
+                    placeMarker(boardArray[1][1], positionsLeft, playerOneTurn, movePending);
                 }
                 else if(input == "CR") {
-                    placeMarker(boardArray[1][2], playerOneTurn, movePending);
+                    placeMarker(boardArray[1][2], positionsLeft, playerOneTurn, movePending);
                 }
                 else if(input == "BL") {
-                    placeMarker(boardArray[2][0], playerOneTurn, movePending);
+                    placeMarker(boardArray[2][0], positionsLeft, playerOneTurn, movePending);
                 }
                 else if(input == "BC") {
-                    placeMarker(boardArray[2][1], playerOneTurn, movePending);
+                    placeMarker(boardArray[2][1], positionsLeft, playerOneTurn, movePending);
                 }
                 else if(input == "BR") {
-                    placeMarker(boardArray[2][2], playerOneTurn, movePending);
+                    placeMarker(boardArray[2][2], positionsLeft, playerOneTurn, movePending);
                 }
                 else {
-                    std::cout << "Invalid option\n";
+                    std::cout << "Invalid option\n\n";
                 }
             }
             displayBoard(boardArray);
@@ -84,14 +81,24 @@ int main() {
             else {
                 playerOneTurn = true;
             }
+            if(positionsLeft == 0) {
+                playing = false;
+            }
         }
-        // quit = true;
+        std::cout << "Play again? ([Y]es / [N]o): ";
+        getline(std::cin, input);
+        if(input == "Y" || input == "y") {
+            playing = true;
+        }
+        else if(input == "N" || input == "n") {
+            quit = true;
+        }
     }
 
     return 0;
 }
 
-void placeMarker(std::string &cell, bool playerOne, bool &movePending) {
+void placeMarker(std::string &cell, int &positionsLeft, bool playerOne, bool &movePending) {
     if(cell == " ") {
         movePending = false;
         if(playerOne) {
@@ -100,6 +107,7 @@ void placeMarker(std::string &cell, bool playerOne, bool &movePending) {
         else {
             cell = "o";
         }
+        positionsLeft--;
     }
     else {
         std::cout << "Position already filled, choose another position\n";
