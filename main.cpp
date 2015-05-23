@@ -1,14 +1,16 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <typeinfo>
 
+void checkGameState(std::string boardArray[3][3], bool &playing, bool &win);
 
-void placeMarker(std::string &cell, int &positionsLeft, bool playerOne, bool &movePending);
+void displayAvailablePositions(std::string boardArray[3][3]);
 
 void displayBoard(std::string boardArray[3][3]);
 
-void displayAvailablePositions(std::string boardArray[3][3]);
+void displayWinner(std::string cell, bool &playing, bool &win);
+
+void placeMarker(std::string &cell, int &positionsLeft, bool playerOne, bool &movePending);
 
 int main() {
     const int dimension = 3;
@@ -18,6 +20,7 @@ int main() {
     bool playing = true;
     bool movePending = false;
     bool playerOneTurn = true;
+    bool win = false;
 
     while(!quit) {
         std::string boardArray[dimension][dimension] = {
@@ -27,6 +30,7 @@ int main() {
         };
 
         positionsLeft = 9;
+        win = false;
         displayBoard(boardArray);
 
         while(playing) {
@@ -75,6 +79,7 @@ int main() {
                 }
             }
             displayBoard(boardArray);
+            checkGameState(boardArray, playing, win);
             if(playerOneTurn) {
                 playerOneTurn = false;
             }
@@ -85,32 +90,61 @@ int main() {
                 playing = false;
             }
         }
-        std::cout << "Play again? ([Y]es / [N]o): ";
-        getline(std::cin, input);
-        if(input == "Y" || input == "y") {
-            playing = true;
-        }
-        else if(input == "N" || input == "n") {
-            quit = true;
+        if(!playing) {
+            if(positionsLeft == 0 && !win) {
+                std::cout << "Game draw\n";
+            }
+
+            std::cout << "Play again? ([Y]es / [N]o): ";
+            getline(std::cin, input);
+            if(input == "Y" || input == "y") {
+                playing = true;
+            }
+            else if(input == "N" || input == "n") {
+                quit = true;
+            }
         }
     }
 
     return 0;
 }
 
-void placeMarker(std::string &cell, int &positionsLeft, bool playerOne, bool &movePending) {
-    if(cell == " ") {
-        movePending = false;
-        if(playerOne) {
-            cell = "x";
-        }
-        else {
-            cell = "o";
-        }
-        positionsLeft--;
+// checkGameState checks each row, column and diagonal to see if the relevant cells match.
+// displayWinner only sets a win condition if it isn't matching empty cells.
+// Only one cell in any given collection needs to be passed to displayWinner, given that
+// they will all be the same
+void checkGameState(std::string boardArray[3][3], bool &playing, bool &win) {
+    // Top row
+    if(boardArray[0][0] == boardArray[0][1] && boardArray[0][1] == boardArray[0][2] && !win) {
+        displayWinner(boardArray[0][0], playing, win);
     }
-    else {
-        std::cout << "Position already filled, choose another position\n";
+    // Middle row
+    if(boardArray[1][0] == boardArray[1][1] && boardArray[1][1] == boardArray[1][2] && !win) {
+        displayWinner(boardArray[1][0], playing, win);
+    }
+    // Bottom row
+    if(boardArray[2][0] == boardArray[2][1] && boardArray[2][1] == boardArray[2][2] && !win) {
+        displayWinner(boardArray[2][0], playing, win);
+    }
+    // Left column
+    if(boardArray[0][0] == boardArray[1][0] && boardArray[1][0] == boardArray[2][0] && !win) {
+        displayWinner(boardArray[0][0], playing, win);
+    }
+    // Middle column
+    if(boardArray[0][1] == boardArray[1][1] && boardArray[1][1] == boardArray[2][1] && !win) {
+        displayWinner(boardArray[0][1], playing, win);
+    }
+    // Right column
+    if(boardArray[0][2] == boardArray[1][2] && boardArray[1][2] == boardArray[2][2] && !win) {
+        displayWinner(boardArray[0][2], playing, win);
+    }
+    // Top left to bottom right diagonal
+    if(boardArray[0][0] == boardArray[1][1] && boardArray[1][1] == boardArray[2][2] && !win) {
+        displayWinner(boardArray[0][0], playing, win);
+    }
+    // Top right to bottom left diagonal
+    if(boardArray[2][0] == boardArray[1][1] && boardArray[1][1] == boardArray[0][2] && !win) {
+        displayWinner(boardArray[2][0], playing, win);
     }
 }
 
@@ -152,4 +186,34 @@ void displayBoard(std::string boardArray[3][3]) {
     std::cout << "-+-+-\n";
     std::cout << boardArray[2][0] << "|" << boardArray[2][1] << "|" << boardArray[2][2] << '\n';
     std::cout << '\n';
+}
+
+void displayWinner(std::string cell, bool &playing, bool &win) {
+    if(cell == "x") {
+        std::cout << "Player one wins!!\n";
+        win = true;
+    }
+    else if(cell == "o") {
+        std::cout << "Player two wins!!\n";
+        win = true;
+    }
+    if(cell != " ") {
+        playing = false;
+    }
+}
+
+void placeMarker(std::string &cell, int &positionsLeft, bool playerOne, bool &movePending) {
+    if(cell == " ") {
+        movePending = false;
+        if(playerOne) {
+            cell = "x";
+        }
+        else {
+            cell = "o";
+        }
+        positionsLeft--;
+    }
+    else {
+        std::cout << "Position already filled, choose another position\n";
+    }
 }
